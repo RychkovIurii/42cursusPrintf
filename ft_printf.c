@@ -6,11 +6,16 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 21:54:14 by irychkov          #+#    #+#             */
-/*   Updated: 2024/04/29 22:48:27 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/04/30 09:30:32 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libftprintf.h"
+
+void	ft_putchar(char c)
+{
+	write(1, &c, 1);
+}
 
 int	ft_printf(const char *format, ...)
 {
@@ -26,7 +31,7 @@ int	ft_printf(const char *format, ...)
 		{
 			i++;
 			if (format[i] == 'c')
-				continue; //temp print &char
+				ft_putchar(va_arg(args, char));
 			else if (format[i] == 's')
 				continue; //temp print string
 			else if (format[i] == 'p')
@@ -45,10 +50,18 @@ int	ft_printf(const char *format, ...)
 				continue; //temp print %
 		}
 		else
-			continue; //print char
+			ft_putchar(format[i]);
 		i++;
 	}
 	va_end(args);
 	return 0; //temp not true
 
 }
+
+/* int	main(void)
+{
+	char	c;
+
+	c = '!';
+	ft_printf("Hello Iurii%c", c);
+} */
