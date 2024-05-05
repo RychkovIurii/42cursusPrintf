@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 21:54:14 by irychkov          #+#    #+#             */
-/*   Updated: 2024/05/05 14:08:08 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/05/05 15:10:05 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,40 @@ void	ft_putstr(char *s, int *counter)
 	}
 }
 
+void	ft_putnbr(int n, int *counter)
+{
+	char	c;
+
+	if (n == -2147483648)
+	{
+		write(1, "-2147483648", 11);
+		*counter = *counter + 11;
+		return ;
+	}
+	else if (n < 0)
+	{
+		write(1, "-", 1);
+		*counter = *counter + 1;
+		n = -n;
+	}
+	if (n >= 10)
+		ft_putnbr(n / 10, counter);
+	c = n % 10 + '0';
+	*counter = *counter + 1;
+	write(1, &c, 1);
+}
+
+void	ft_putunsnbr(unsigned int n, int *counter)
+{
+	char	c;
+
+	if (n >= 10)
+		ft_putunsnbr(n / 10, counter);
+	c = n % 10 + '0';
+	*counter = *counter + 1;
+	write(1, &c, 1);
+}
+
 int	ft_printf(const char *format, ...)
 {
 	size_t	i;
@@ -56,11 +90,11 @@ int	ft_printf(const char *format, ...)
 			else if (format[i] == 'p')
 				continue; //temp print pointer
 			else if (format[i] == 'd')
-				continue; //temp print decimal
+				ft_putnbr(va_arg(args, int), &counter);
 			else if (format[i] == 'i')
-				continue; //temp print int
+				ft_putnbr(va_arg(args, int), &counter);
 			else if (format[i] == 'u')
-				continue; //temp print unsigned dec
+				ft_putunsnbr(va_arg(args, unsigned int), &counter);
 			else if (format[i] == 'x')
 				continue; //temp print hex lowercase
 			else if (format[i] == 'X')
@@ -82,14 +116,34 @@ int	ft_printf(const char *format, ...)
 
 int	main(void)
 {
-	char	c;
+	char			c;
+	int				number;
+	int				number2;
+	unsigned int	number3;
 	char	s[20] = "! Welcome";
 
 	c = '!';
-	//Test for char
+	number = -2147483648;
+	number2 = 2147483647;
+	number3 = 4294967295;
+
+	//Test for %c
 	ft_printf("Hello Iurii%c\n", c);
 	printf("original return - %d\n", printf("Hello Iurii%c\n", c));
-	//Test for string
+
+	//Test for %s
 	ft_printf("\nHello Iurii%s\n", s);
 	printf("original return - %d\n", printf("\nHello Iurii%s\n", s));
+
+	//Test for %d
+	ft_printf("\n%d\n", number);
+	printf("original return - %d\n", printf("\n%d\n", number));
+
+	//Test for %i
+	ft_printf("\n%i\n", number2);
+	printf("original return - %d\n", printf("\n%i\n", number2));
+
+	//Test for %u
+	ft_printf("\n%u\n", number3);
+	printf("original return - %d\n", printf("\n%u\n", number3));
 }
