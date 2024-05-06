@@ -6,61 +6,70 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 21:54:14 by irychkov          #+#    #+#             */
-/*   Updated: 2024/05/06 15:57:02 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/05/06 18:28:48 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libftprintf.h"
 #include <stdio.h>
 
-int	ft_printf(const char *format, ...)
+static void	ft_print_formatted(const char *format, va_list args, int *counter)
+{
+	if (*format == 'c')
+		ft_putchar(va_arg(args, int), counter);
+	else if (*format == 's')
+		ft_putstr(va_arg(args, char *), counter);
+	else if (*format == 'p')
+	{
+		write(1, "0x", 2);
+		*counter = *counter + 2;
+		ft_putptr(va_arg(args, void *), counter);
+	}
+	else if (*format == 'd' || *format == 'i')
+		ft_putnbr(va_arg(args, int), counter);
+	else if (*format == 'u')
+		ft_putunsnbr(va_arg(args, unsigned int), counter);
+	else if (*format == 'x' || *format == 'X')
+		ft_puthex(va_arg(args, unsigned int), counter, *format);
+	else if (*format == '%')
+		ft_putchar('%', counter);
+}
+
+static void	ft_helper(const char *format, va_list args, int *counter)
 {
 	size_t	i;
-	int		counter;
-	va_list	args;
 
-	va_start(args, format);
-	//validation for format?
 	i = 0;
-	counter = 0;
 	while (format[i])
 	{
 		if (format[i] == '%' && format[i + 1] != '\0')
 		{
 			i++;
-			if (format[i] == 'c')
-				ft_putchar(va_arg(args, int), &counter);
-			else if (format[i] == 's')
-				ft_putstr(va_arg(args, char *), &counter);
-			else if (format[i] == 'p')
-			{
-				write(1, "0x", 2);
-				counter += 2;
-				ft_putptr(va_arg(args, void *), &counter);
-			}
-			else if (format[i] == 'd')
-				ft_putnbr(va_arg(args, int), &counter);
-			else if (format[i] == 'i')
-				ft_putnbr(va_arg(args, int), &counter);
-			else if (format[i] == 'u')
-				ft_putunsnbr(va_arg(args, unsigned int), &counter);
-			else if (format[i] == 'x')
-				ft_puthex(va_arg(args, unsigned int), &counter, format[i]);
-			else if (format[i] == 'X')
-				ft_puthex(va_arg(args, unsigned int), &counter, format[i]);
-			else if (format[i] == '%')
-				ft_putchar('%', &counter);
+			ft_print_formatted(&format[i], args, counter);
 		}
 		else
 		{
-			ft_putchar(format[i], &counter);
+			write(1, &format[i], 1);
+			*counter = *counter + 1;
 		}
 		i++;
 	}
+}
+
+int	ft_printf(const char *format, ...)
+{
+	int		counter;
+	va_list	args;
+
+	va_start(args, format);
+	//validation for format?
+	counter = 0;
+	ft_helper(format, args, &counter);
 	va_end(args);
 	return (counter);
 }
 
+/*
 int	main(void)
 {
 	char			c;
@@ -118,6 +127,7 @@ int	main(void)
 
 	//Test for error
 	ft_printf("mine return - %d\n", ft_printf("%d"));
-	//printf("original return - %d\n", printf("%d"));			CHECK ERROR. Original function has diff behavior.
+	//printf("original return - %d\n", printf("%d"));	CHECK ERROR. Original function has diff behavior.
 
 }
+*/
