@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:48 by irychkov          #+#    #+#             */
-/*   Updated: 2024/05/07 18:37:06 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/05/07 18:57:40 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ void	ft_print_ptr(void *p, int *counter, int *check_write)
 	if (ptr >= 16)
 	{
 		ft_print_ptr((void *)(ptr / 16), counter, check_write);
+		if (*check_write == -1)
+			return ;
 		ft_print_ptr((void *)(ptr % 16), counter, check_write);
 	}
 	else
