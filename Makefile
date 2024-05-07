@@ -6,17 +6,17 @@
 #    By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/06 16:00:25 by irychkov          #+#    #+#              #
-#    Updated: 2024/05/06 16:28:22 by irychkov         ###   ########.fr        #
+#    Updated: 2024/05/07 18:29:14 by irychkov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 SRC = 	ft_printf.c \
-		ft_putchar.c \
-		ft_putstr.c \
-		ft_putnbr.c \
-		ft_putunsnbr.c \
-		ft_puthex.c \
-		ft_putptr.c \
+		ft_print_char.c \
+		ft_print_str.c \
+		ft_print_nbr.c \
+		ft_print_unsnbr.c \
+		ft_print_hex.c \
+		ft_print_ptr.c \
 		ft_printf.c
 
 OBJS = $(SRC:.c=.o)

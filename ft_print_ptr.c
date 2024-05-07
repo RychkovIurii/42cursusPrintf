@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putptr.c                                        :+:      :+:    :+:   */
+/*   ft_print_ptr.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:48 by irychkov          #+#    #+#             */
-/*   Updated: 2024/05/07 18:00:01 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/05/07 18:37:06 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libftprintf.h"
+#include "ft_printf.h"
 
-void	ft_putptr(void *p, int *counter, int *check_write)
+void	ft_print_ptr(void *p, int *counter, int *check_write)
 {
 	char			c;
 	unsigned long	ptr;
@@ -22,8 +22,8 @@ void	ft_putptr(void *p, int *counter, int *check_write)
 		return ;
 	if (ptr >= 16)
 	{
-		ft_putptr((void *)(ptr / 16), counter, check_write);
-		ft_putptr((void *)(ptr % 16), counter, check_write);
+		ft_print_ptr((void *)(ptr / 16), counter, check_write);
+		ft_print_ptr((void *)(ptr % 16), counter, check_write);
 	}
 	else
 	{
@@ -31,7 +31,7 @@ void	ft_putptr(void *p, int *counter, int *check_write)
 			c = ptr + '0';
 		else
 			c = ptr - 10 + 'a';
-		ft_putchar(c, counter, check_write);
+		ft_print_char(c, counter, check_write);
 		if (*check_write == -1)
 			return ;
 	}
