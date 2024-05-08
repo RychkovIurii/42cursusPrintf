@@ -6,11 +6,11 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 16:30:32 by irychkov          #+#    #+#             */
-/*   Updated: 2024/05/07 16:35:14 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/05/08 15:11:42 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libftprintf.h"
+#include "ft_printf.h"
 #include <stdio.h>
 
 int	main(void)
@@ -30,6 +30,12 @@ int	main(void)
 	number3 = 4294967295;
 	number4 = -1;
 	ptr2 = s;
+
+
+	printf("\n\n");  	
+	printf("Return value check for %%. Original return value is '%d'\n", printf("%", 42));
+	printf("\n");
+	printf("Return value check for %%. Ftprintf return value is '%d'\n", ft_printf("%", 42));
 
 	//Test for %c
 	ft_printf("mine return - %d\n", ft_printf("Hello Iurii%c\n", c));
