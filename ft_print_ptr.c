@@ -6,26 +6,22 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:48 by irychkov          #+#    #+#             */
-/*   Updated: 2024/05/07 18:57:40 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/05/08 14:37:19 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void	ft_print_ptr(void *p, int *counter, int *check_write)
+static int	ft_helper_ptr(unsigned long ptr, int *counter)
 {
-	char			c;
-	unsigned long	ptr;
+	char	c;
 
-	ptr = (unsigned long)p;
-	if (*check_write == -1)
-		return ;
 	if (ptr >= 16)
 	{
-		ft_print_ptr((void *)(ptr / 16), counter, check_write);
-		if (*check_write == -1)
-			return ;
-		ft_print_ptr((void *)(ptr % 16), counter, check_write);
+		if (ft_helper_ptr((ptr / 16), counter) == -1)
+			return (-1);
+		if (ft_helper_ptr((ptr % 16), counter) == -1)
+			return (-1);
 	}
 	else
 	{
@@ -33,8 +29,24 @@ void	ft_print_ptr(void *p, int *counter, int *check_write)
 			c = ptr + '0';
 		else
 			c = ptr - 10 + 'a';
-		ft_print_char(c, counter, check_write);
-		if (*check_write == -1)
-			return ;
+		if (write(1, &c, 1) == -1)
+			return (-1);
+		else
+			*counter += 1;
 	}
+	return (*counter);
+}
+
+int	ft_print_ptr(void *p)
+{
+	int				counter;
+	unsigned long	ptr;
+
+	counter = 0;
+	ptr = (unsigned long)p;
+	if (write(1, "0x", 2) == -1)
+		return (-1);
+	counter += 2;
+	ft_helper_ptr(ptr, &counter);
+	return (counter);
 }

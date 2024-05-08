@@ -6,69 +6,72 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 21:54:14 by irychkov          #+#    #+#             */
-/*   Updated: 2024/05/07 18:36:53 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/05/08 15:11:31 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static void	ft_print_formatted(const char *format,
-								va_list args, int *counter, int *check_write)
+static int	ft_print_formatted(const char *format, va_list args)
 {
+	int	check_write;
+
+	check_write = 0;
 	if (*format == 'c')
-		ft_print_char(va_arg(args, int), counter, check_write);
+		check_write = ft_print_char(va_arg(args, int));
 	else if (*format == 's')
-		ft_print_str(va_arg(args, char *), counter, check_write);
+		check_write = ft_print_str(va_arg(args, char *));
 	else if (*format == 'p')
-	{
-		ft_print_str("0x", counter, check_write);
-		ft_print_ptr(va_arg(args, void *), counter, check_write);
-	}
+		check_write = ft_print_ptr(va_arg(args, void *));
 	else if (*format == 'd' || *format == 'i')
-		ft_print_nbr(va_arg(args, int), counter, check_write);
+		check_write = ft_print_nbr(va_arg(args, int));
 	else if (*format == 'u')
-		ft_print_unsnbr(va_arg(args, unsigned int), counter, check_write);
+		check_write = ft_print_unsnbr(va_arg(args, unsigned int));
 	else if (*format == 'x' || *format == 'X')
-		ft_print_hex(va_arg(args, unsigned int), counter, *format, check_write);
+		check_write = ft_print_hex(va_arg(args, unsigned int), *format);
 	else if (*format == '%')
-		ft_print_char('%', counter, check_write);
+		check_write = write(1, "%", 1);
+	return (check_write);
 }
 
-static void	ft_helper(const char *format, va_list args,
-											int *counter, int *check_write)
+static int	ft_helper(const char *format, va_list args)
 {
-	size_t	i;
+	int		check_write;
+	int		counter;
 
-	i = 0;
-	while (format[i])
+	counter = 0;
+	while (*format)
 	{
-		if (format[i] == '%' && format[i + 1] != '\0')
+		if (*format == '%')
 		{
-			i++;
-			ft_print_formatted(&format[i], args, counter, check_write);
+			check_write = ft_print_formatted(++format, args);
+			if (check_write == -1)
+				return (-1);
+			counter = counter + check_write;
 		}
 		else
 		{
-			ft_print_char(format[i], counter, check_write);
+			if (write(1, format, 1) == -1)
+				return (-1);
+			counter++;
 		}
-		if (*check_write == -1)
-			break ;
-		i++;
+		if (!*format)
+			return (0);
+		format++;
 	}
+	return (counter);
 }
 
 int	ft_printf(const char *format, ...)
 {
 	int		counter;
-	int		check_write;
 	va_list	args;
 
 	va_start(args, format);
 	counter = 0;
-	check_write = 1;
-	ft_helper(format, args, &counter, &check_write);
+	counter = ft_helper(format, args);
 	va_end(args);
-	if (check_write == -1)
+	if (counter == -1)
 		return (-1);
 	return (counter);
 }
